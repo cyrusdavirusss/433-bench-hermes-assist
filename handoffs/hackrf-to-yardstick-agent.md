@@ -32,7 +32,9 @@ disagreeing about the same skill.
 
 ## What is already verified (do not re-litigate, do not re-run)
 
-Read `verifications/verified-facts.md` — it is the ledger, and the HackRF has seven entries in it.
+Read `~/hermes-private/verifications/verified-facts.md` — it is the ledger, and the HackRF has
+seven entries in it. (It moved to the private store on 2026-09-28, when the public half was split
+out and this repo was made world-readable.)
 Short version of the HackRF state:
 
 - The board **powers up and its firmware runs** (official LED semantics: 1V8 + RF lit means firmware
@@ -70,7 +72,7 @@ can do what:
 | Flipper Zero | sub-GHz, LF, HF, NFC | see the operator's own notes on firmware updates erasing AKL/simulator keys |
 
 The shared rule (in `skills/verified-facts/SKILL.md`) applies to your work too: **when you verify
-something, record it in `verifications/verified-facts.md` in the same turn, with the command that
+something, record it in `~/hermes-private/verifications/verified-facts.md` in the same turn, with the command that
 proved it.** The operator has been burned by an instance that treated "I have no record of it" as
 "it didn't happen" — his own project record is authoritative, and re-litigating it wastes his time.
 
