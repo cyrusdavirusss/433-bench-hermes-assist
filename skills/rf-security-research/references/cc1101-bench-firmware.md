@@ -253,10 +253,14 @@ The same kill-by-name trap bites the shell: `pkill -f <pattern>` matches its own
 even a *bracketed* pattern is defeated when the plain name appears elsewhere in the same command
 line — an `echo` mentioning the script was enough for the command to SIGTERM itself. Kill by pid.
 
-**Still open (2026-09-28):** `rig_tx_verify.py` (rig TX → dongle RX) **hung in the dongle-open step**
-instead of reporting a level, after the dongle had been through TX/IDLE churn. That is an
-rflib/transport state, not a measurement: the rig's transmitter remains unverified, and the first
-thing to try is a physical replug of the dongle.
+**Diagnosed (2026-09-28):** `rig_tx_verify.py` (rig TX → dongle RX) **hung in the dongle-open step**,
+and the cause was found the same night: `RfCat()` sat inside `resetup()` printing
+`USBTimeoutError(110, 'Operation timed out')` about twenty times. That is the dongle's documented
+wedged state, **not a bug in the script** — it looks like a hang with no output, which is why it cost
+a run. The rig was healthy throughout the same check (`INFO fw=1.0.0 cc1101_partnum=0x00
+cc1101_version=0x14 marcstate=0x0D rssi=-115.5 rx=1`). **Remedy: physically replug the dongle**, then
+re-run. The rig's transmitter remains unverified — do not record it as working or broken until this
+reports a level.
 
 ## Receiver comparison and one dead remote (27 Sep 2026)
 
