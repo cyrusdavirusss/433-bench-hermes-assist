@@ -262,6 +262,33 @@ cc1101_version=0x14 marcstate=0x0D rssi=-115.5 rx=1`). **Remedy: physically repl
 re-run. The rig's transmitter remains unverified — do not record it as working or broken until this
 reports a level.
 
+### What is inside a PTX-4 frame (decoding attempt, 2026-09-28)
+
+Decoded from the eight clean presses (each button once, then button 1 four times) by pairing the pulses:
+
+- The payload is **PWM**: each bit is a pulse pair with a ~**1200 us** period (50/77 pairs at 1200,
+  15 more at 1150; the remainder are the preamble region). The bit value is the **order** within the
+  pair — short-then-long reads as one value, long-then-short the other — not the width alone.
+- A frame is 154 pulses ≈ **68 data bits** after a preamble of ~18 short pulses (its pairs are
+  short+short ≈ 780 us, which is how the preamble was identified).
+- Across eight presses the payload splits into three clean regions:
+
+| region | bits | behaviour across presses | reads as |
+|---|---|---|---|
+| preamble + header | 0-11 | constant / capture-edge artefacts | sync |
+| hopping field | 12-43 (32 bits) | changes on **every** press, no visible increment | encrypted hop |
+| fixed ID | 44-72 (29 bits) | identical across all 8 presses **and all four buttons** | device serial |
+| button / channel | 73-75 (3 bits) | constant per button, different between buttons | channel selector |
+
+- Per-button values seen (MSB-first, as decoded): button 1 = `001`, button 2 = `101`, button 3 = `110`,
+  button 4 = `011` — identical across every press of that button.
+- **No plaintext counter appears** in the hopping field: it looks keyed, which matches ATA's "code
+  hopping" claim and matches the measured immunity to replay. The structure is recoverable from
+  captures; the hopping sequence is not.
+- Caveat: polarity and MSB/LSB order are assumptions (short-high = 1). Flipping polarity inverts every
+  reading without changing the structure, and the header region (bits 0-11) is unreliable because
+  those pairs break the 1200 us rule.
+
 ## Receiver comparison and one dead remote (27 Sep 2026)
 
 - YS1 RX re-measured on a direct USB port (3-3): RSSI flat at **-110 to -113.5 dBm** (spread

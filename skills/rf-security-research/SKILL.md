@@ -18,14 +18,14 @@ This skill governs how you assist with university or personal research projects 
 
 Before touching the 433 bench (ESP32 + CC1101 rig, YARD Stick One), read in this order:
 
-1. `~/hermes-shared/handoffs/` — newest file first. That is the state of the bench as of the last
+1. `~/433-bench-hermes-assist/handoffs/` — newest file first. That is the state of the bench as of the last
    session: what is verified, what is open, and the gotchas that already cost time.
 2. `references/cc1101-bench-firmware.md` — the durable record: pinout, register image, the BW=58
    finding, the loose-MISO signature, the host command reference.
 3. `scripts/bench_selftest.sh` — one command, ~75 s, tells you whether the bench is sound before you
    debug anything through it.
 
-Full bench state: `~/hermes-shared/handoffs/cc1101-bench-state-20260927.md`.
+Full bench state: `~/433-bench-hermes-assist/handoffs/cc1101-bench-state-20260927.md`.
 
 ### The operator's own project record is authoritative
 
