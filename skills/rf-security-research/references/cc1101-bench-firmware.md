@@ -209,6 +209,55 @@ else changed between runs.
   (YS1 as synthetic PT2262 transmitter) captured by `remote_test.py`. A good capture shows
   ~26-32 edges per frame with the histogram peaks at 1T and 3T.
 
+## A real code-hopping remote read end-to-end: ATA PTX-4 (28 Sep 2026)
+
+The bench read a **brand-new ATA PTX-4** (Bunnings, SecuraCode, 433.92 MHz) — the real-remote proof
+the synthetic PT2262 frame could never give. 50 real transmissions captured at contact range,
+level **−66.5 to −72.5 dBm**, no dead zones.
+
+Measured protocol:
+
+| property | value |
+|---|---|
+| modulation | OOK (ASK) — pulse-width coded, not FSK |
+| symbols | 1:2 set — 1T ≈ **390 us**, 2T ≈ **793 us** (ratio 2.03) |
+| bit period | ≈ 1.18 ms → **~845 bps** |
+| frame | ~154 pulses ≈ **77 bits**, first ~23 symbols are a preamble of short pulses |
+| frame duration | ≈ 91 ms |
+| repeat rate while held | ~100 ms (≈ 10 frames/s) |
+
+- **Within one held press the code is IDENTICAL frame to frame** — repeats matched 0.99–1.00 after
+  preamble alignment. Do not expect a per-frame counter.
+- **Every PRESS is a new code — it hops.** Four separate presses of the *same* button gave pairwise
+  similarities of 0.75–0.86, the same range as presses of *different* buttons (0.73–0.79), while the
+  repeats **inside** one press matched 0.99–1.00. So that variation is the rolling code, not
+  measurement noise: capture-and-replay cannot work on this remote, by design.
+- **Four buttons = four distinct codes** (4 of 4 compared presses differed), all on the same frame
+  layout — only the payload changes. Same protocol parameters on every button.
+- **Frames must be captured from the frame start to be comparable.** Frames caught mid-burst cannot
+  be aligned, and comparing them produces meaningless similarity scores: an unsynchronised
+  comparison reported 0.68–0.84 similarity between frames that turned out to be identical. Only
+  compare frames whose preamble is intact.
+- **The rig re-dumps one burst several times within 0.1 ms.** Treat reports <50 ms apart as ONE
+  transmission before counting anything, or a 2-second hold looks like hundreds of "frames".
+
+### Gotcha: killing an rflib TX script leaves the dongle transmitting
+
+A killed `ys1_send_code.py` / self-test does NOT stop the dongle — rflib does not reset the radio
+when the process dies, so it kept radiating the synthetic 350/1050 us frame for ~27 s and **jammed a
+live capture**, which is why later presses of a real remote went missing from that window. It went
+silent the instant `setModeIDLE()` was issued, which is how the pollution was identified. Always run
+`scripts/ys1_stop_tx.py` after killing any dongle TX.
+
+The same kill-by-name trap bites the shell: `pkill -f <pattern>` matches its own command line, and
+even a *bracketed* pattern is defeated when the plain name appears elsewhere in the same command
+line — an `echo` mentioning the script was enough for the command to SIGTERM itself. Kill by pid.
+
+**Still open (2026-09-28):** `rig_tx_verify.py` (rig TX → dongle RX) **hung in the dongle-open step**
+instead of reporting a level, after the dongle had been through TX/IDLE churn. That is an
+rflib/transport state, not a measurement: the rig's transmitter remains unverified, and the first
+thing to try is a physical replug of the dongle.
+
 ## Receiver comparison and one dead remote (27 Sep 2026)
 
 - YS1 RX re-measured on a direct USB port (3-3): RSSI flat at **-110 to -113.5 dBm** (spread
