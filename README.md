@@ -1,4 +1,4 @@
-# hermes-shared (public)
+# 433-bench-hermes-assist (public)
 
 The **433 / RF bench** store: one copy of the bench skill, its tools and its findings, so every
 Hermes instance — every profile on this machine, and the other machines — works from the same
@@ -23,7 +23,7 @@ enforces the direction: only `rf-security-research` routes here; anything else r
 ## Start here on a new machine
 
 ```bash
-git clone https://github.com/cyrusdavirusss/hermes-shared.git ~/hermes-shared
+git clone https://github.com/cyrusdavirusss/433-bench-hermes-assist.git ~/433-bench-hermes-assist
 ```
 
 then in that instance's `~/.hermes/config.yaml`:
@@ -31,7 +31,7 @@ then in that instance's `~/.hermes/config.yaml`:
 ```yaml
 skills:
   external_dirs:
-    - /home/<user>/hermes-shared/skills     # public half (this repo)
+    - /home/<user>/433-bench-hermes-assist/skills   # public half (this repo)
     - /home/<user>/hermes-private/skills    # private half — needs account access
 ```
 

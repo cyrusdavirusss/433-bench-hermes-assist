@@ -2,7 +2,7 @@
 # Fan a skill out to every Hermes profile on this machine, mirror it into the CORRECT store, and
 # commit. Two stores, because the bench can be public and personal facts cannot:
 #
-#   ~/hermes-shared    PUBLIC   - the 433/RF bench only. NOTHING personal goes here, ever.
+#   ~/433-bench-hermes-assist   PUBLIC  - the 433/RF bench only. NOTHING personal goes here, ever.
 #   ~/hermes-private   PRIVATE  - everything else: the verified-facts ledger, vp-overwatch
 #                                 research (incl. the copper site list), infra details.
 #
@@ -18,7 +18,7 @@
 # Exit codes: 0 ok · 1 usage/not found · 2 nothing to do
 set -uo pipefail
 
-PUBLIC="${HERMES_SHARED:-/home/cyrus/hermes-shared}"
+PUBLIC="${HERMES_SHARED:-/home/cyrus/433-bench-hermes-assist}"
 PRIVATE="${HERMES_PRIVATE:-/home/cyrus/hermes-private}"
 DEFAULT_TREE="$HOME/.hermes/skills"
 PROFILE_ROOT="$HOME/.hermes/profiles"

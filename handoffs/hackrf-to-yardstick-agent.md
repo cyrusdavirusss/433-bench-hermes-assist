@@ -15,8 +15,8 @@ shared-store rules, so you don't have to re-derive any of it.
 Everything here lives in the shared store. On your machine:
 
 ```bash
-git clone cyrus@<this-machine>:/home/cyrus/hermes-shared ~/hermes-shared   # first time
-git -C ~/hermes-shared pull                                                # after that
+git clone cyrus@<this-machine>:/home/cyrus/433-bench-hermes-assist ~/433-bench-hermes-assist   # first time
+git -C ~/433-bench-hermes-assist pull                                      # after that
 ```
 
 Then either read this directory directly, or point your own config at it so the shared skills load
@@ -24,7 +24,7 @@ for you too:
 
 ```yaml
 skills:
-  external_dirs: [/home/<you>/hermes-shared/skills]
+  external_dirs: [/home/<you>/433-bench-hermes-assist/skills]
 ```
 
 Every profile on this machine already does that, and it is what stopped the two profiles here from
