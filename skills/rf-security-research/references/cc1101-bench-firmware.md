@@ -289,6 +289,46 @@ Decoded from the eight clean presses (each button once, then button 1 four times
   reading without changing the structure, and the header region (bits 0-11) is unreliable because
   those pairs break the 1200 us rule.
 
+## Soaking, filtering and what the published attacks mean for this payload (2026-09-29)
+
+**The tools** (`scripts/`): `rfsoak.py` measures continuously for as long as you ask, writing every
+burst to JSONL + SQLite — each transmission with its raw pulse train, PWM payload, level, gap and
+device-clock time. `rfselect.py` then filters (by signal, session, time window, level) and either
+exports (`bits`, `csv`, `raw` = 8-bit OOK at 1 MSps for URH/inspectrum) or runs `crypt`.
+`rfselect.py list` is the inventory; `sessions` shows the soaks.
+
+**The PTX-4 payload is 66 bits — the exact size of an HCS301/KEELOQ payload**, whose documented
+layout is `[1 repeat][1 battery-low][4 button][28-bit serial][32-bit encrypted]`. Rebuilt database,
+clean 4-button window, 23 frames: **31 bits constant, 35 varying**, within a press repeats are
+identical (**median 1.000**), between presses only **0.758** → it hops on every press, and 8 presses
+produced 8 distinct codes. The field *sizes* match HCS301 (a ~30-bit identity field + a ~28-bit
+field that changes every press + a small varying tail); the bit ORDER is not yet pinned down and
+needs many presses per button. (This supersedes the earlier "77 bits, serial at 44-72" reading,
+which included the preamble pairs as data.)
+
+**Bit alignment must come from the data, never from the preamble.** The preamble is a run of SHORT
+pulses and that run crosses pair boundaries, so its LENGTH is not a bit boundary — shifting the
+train by it misaligned every pair and collapsed within-press similarity from 0.96 to 0.76. Correct
+method: pair the train both ways, keep the phase with the most pairs summing to ~1180 us, then drop
+the short+short sync pairs (~780 us). What is left is the payload.
+
+**State of the art, and what applies here** (searched 2026-09-28):
+
+- No public break of ATA SecuraCode itself. The published work is on KEELOQ-class hardware.
+- **KEELOQ the cipher is broken**: algebraic + slide attacks recover the 64-bit key from ~**2^16 known
+  plaintexts** — the ceiling the hopping mode imposes — in ~2^53 encryptions, implemented and
+  practical on a PC (FSE 2008). That is a *capture-count* problem, which is what `rfsoak.py` exists
+  to solve.
+- Cheaper in practice are the physical breaks: **DPA clones a remote from ~10 power traces**
+  (Eisenbarth et al. 2008), and the **manufacturer key lives in a receiver**.
+- System-level: **RollJam** (2015) and **RollBack** (2022/23 — two consecutive codes replayed to
+  reset the receiver's counter, time-agnostic and unlimited). Both need a **receiver** and
+  **jamming**; our opener is gone, so neither is testable here, and jamming is illegal over the air
+  in Australia (ACMA) — any such work belongs in a shielded enclosure.
+- Consequence: with a transmitter and no receiver, the tractable paths are (a) a large capture
+  campaign to feed the 2^16-known-plaintext KEELOQ attack, or (b) side-channel work (~10 traces,
+  the operator has a scope). Not mathematical decryption from a handful of captures.
+
 ## Receiver comparison and one dead remote (27 Sep 2026)
 
 - YS1 RX re-measured on a direct USB port (3-3): RSSI flat at **-110 to -113.5 dBm** (spread
