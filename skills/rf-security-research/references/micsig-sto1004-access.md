@@ -43,7 +43,9 @@ rate 130k wfms/s. Remote control officially supports **SCPI, PC software, and iO
     :MEASure:STATistic:{MEAN|MAX|MIN|DEV|CURRent|COUNt}:VIEW?   (statistics, useful for averaging)
     :ACQuire:TYPE, :ACQuire:DEPTh?, :AUTO:SET:*, :AUTO:RANge:*
     :WAVeform:{XINCrement?|XORigin?|XREFerence?|YINCrement?|YORigin?|YREFerence?}  (field by field)
-    :STORage:SAVE:{SOURce|LOCAtion|TYPE|FILename} then :STORage:SAVE:START      <- SAFE SAVE
+    :STORage:SAVE:{SOURce|LOCAtion|TYPE|FILename} then :STORage:SAVE:START   (ACCEPTED BUT A NO-OP
+                                                    on this unit — tested, produces no file; use the UI)
+    :MENU:STOP / :MENU:RUN                       (safe; :MENU:STOP verified via :TRIGger:STATus? = STOP)
     :STORage:LOAD <ref><bool>,<filename>
     :STORage:CAPTure:STARt / :TIMEstamp / INCOlor                               <- SCREEN CAPTURE
     :STORage:CONSave / :STORage:CONLoad:FILename                                (setup save/load)
@@ -58,9 +60,17 @@ during a 70 Mpts NORMal download, once on the SOURce/FORMat/MODE/PREamble sequen
 SCPI service kept answering `*IDN?` while the app died, so it read as a plumbing fault. The commands
 are documented, so this is firmware fragility, not misuse of an unknown command.
 
-Use instead: **`:STORage:SAVE:START`** to write the capture to internal storage, then fetch the file
-over HTTP from `/files/refwave/<name>`. For an image, `:STORage:CAPTure:STARt` then fetch from
-`/pictures/Screenshots/<name>`. Neither goes anywhere near `:WAVeform:DATA?`.
+Use instead: the **on-screen Save** (button, or a touch event over RemotePlay) to write the capture to
+internal storage, then fetch the file over HTTP from `/files/refwave/<name>`. For an image,
+`:STORage:CAPTure:STARt` then fetch from `/pictures/Screenshots/<name>`.
+
+**TESTED 2026-09-29: the SCPI save is a NO-OP on this unit.** `:STORage:SAVE:SOURce/LOCAtion/TYPE/
+FILename` + `:STORage:SAVE:START` are all accepted with an empty error queue and produce **no file at
+all** (13 files in `/files/refwave` before and after; HTTP 404 for the requested name in every exposed
+folder). It does not crash the app — it simply does nothing. So drive the UI instead.
+
+Also confirmed safe: **`:MENU:STOP`** (→ `:TRIGger:STATus?` returns `STOP`) and **`:MENU:RUN`**. The
+`:MENU:` family works and does not upset the app, unlike `:WAVeform:*`.
 
 House rules that came out of this:
 - one SCPI client at a time (the MCP server's session is the one);
