@@ -38,6 +38,27 @@ skills:
 Read the newest file in `handoffs/` first: it is written for an instance with zero context, and it
 carries what is verified, what is unverified, and the gotchas that already cost time.
 
+## Update an existing machine — the one command
+
+**For an instance that already has this clone, updating is nothing but a `git pull`.** The skills
+are loaded from THIS directory through `skills.external_dirs`, so there is no copy step and nothing
+to install:
+
+```bash
+~/433-bench-hermes-assist/update.sh
+```
+
+It pulls, says what arrived, checks the store is actually wired into `skills.external_dirs` (and
+prints the exact line if it is not), and lists the skill files you now hold. `./update.sh --check`
+reports whether you are behind without changing anything.
+
+Told to "update yourself from GitHub" and unsure what that means? It means that one command, run
+from inside the clone. No clone yet? Do the "Start here" step above, then run it.
+
+**If `update.sh` says the store is not in `skills.external_dirs`, the pull changed nothing you can
+see.** That is the failure that reads as "the update did not work" — the files are on disk and no
+instance is loading them. Fix it with the `hermes config set` line the script prints.
+
 ## History
 
 Rebuilt from scratch on 2026-09-28 with a single commit, when this repo was made public. The

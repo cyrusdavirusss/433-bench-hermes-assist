@@ -1,7 +1,9 @@
 # Micsig STO1004 — how to get at it, and what not to send it
 
-Operator's scope: **Micsig STO1004**, serial 330012028, at **192.168.1.108** (Wi-Fi, DHCP — re-discover
-by scanning the /24 for port 111 or 5025).
+Operator's scope: **Micsig STO1004**, serial 330012028, on the bench LAN at a DHCP address
+(re-discover it by scanning the /24 for port 111 or 5025). The address is deliberately NOT written
+here — this repository is public, and the store's rule is that internal addresses live in the
+private ledger; look up "Micsig STO1004" there for the value.
 
 Spec: 4 channels, 100 MHz, 1 GSa/s, **70 Mpts**, 8-bit, 8" 800×600 touchscreen, 32 GB internal
 storage, Wi-Fi / USB 3.0 host / USB-C / HDMI / trigger-out, built-in 5 h battery. Waveform capture
@@ -9,7 +11,8 @@ rate 130k wfms/s. Remote control officially supports **SCPI, PC software, and iO
 
 ## Five ways in (ordered by usefulness here)
 
-1. **SCPI over VXI-11** — `pyvisa` resource `TCPIP0::192.168.1.108::INSTR` (port 111 rpcbind). This is
+1. **SCPI over VXI-11** — `pyvisa` resource `TCPIP0::<bench-lan-ip>::INSTR` (port 111 rpcbind; the
+address is in the private ledger, not here). This is
    the scripting path. One client only: opening a second session while another is live fails, and
    rapid connect/disconnect churn is associated with trouble. Port 5025 (raw socket) is open but did
    not answer `*IDN?` with plain LF framing — use VXI-11.
