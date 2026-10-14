@@ -60,20 +60,26 @@ else
 fi
 
 echo
-echo "== the bench skill is now:"
-SKILLDIR="$HERE/skills/rf-security-research"
-if [ -d "$SKILLDIR" ]; then
-  echo "  $SKILLDIR"
-  echo "  references:"
-  ls -1t "$SKILLDIR/references" 2>/dev/null | sed 's/^/    /'
-  echo "  scripts:"
-  ls -1 "$SKILLDIR/scripts" 2>/dev/null | sed 's/^/    /'
-  echo
-  echo "  READ FIRST: the newest file in $HERE/handoffs/ — it is written for an instance"
-  echo "  with zero context, and carries what is verified, what is not, and the gotchas."
-else
-  echo "  !! skills/rf-security-research missing from the clone"
-fi
+echo "== the shared skills are now:"
+for s in rf-security-research j2534-vehicle-diagnostics; do
+  SKILLDIR="$HERE/skills/$s"
+  if [ -d "$SKILLDIR" ]; then
+    echo "  $SKILLDIR"
+    [ -d "$SKILLDIR/references" ] && { echo "    references:"; ls -1t "$SKILLDIR/references" | sed 's/^/      /'; }
+    [ -d "$SKILLDIR/scripts" ] && { echo "    scripts:"; ls -1 "$SKILLDIR/scripts" | sed 's/^/      /'; }
+  else
+    echo "  !! skills/$s missing from the clone"
+  fi
+done
+echo
+echo "  READ FIRST: the newest file in $HERE/handoffs/ — it is written for an instance"
+echo "  with zero context, and carries what is verified, what is not, and the gotchas."
+echo
+echo "== the CAR side is a SEPARATE public repo (it is not in this clone):"
+echo "     git clone https://github.com/cyrusdavirusss/j2534-mcp-server.git ~/j2534-mcp-server"
+echo "  J2534/OBD tooling + bench scans. Windows-side work: it needs 32-bit python.exe and a"
+echo "  J2534 PassThru DLL, so a Linux/macOS instance drives a Windows host rather than running it."
+echo "  Method, preconditions and findings: skills/j2534-vehicle-diagnostics/SKILL.md"
 
 echo
 echo "== check a specific skill loaded (do this, don't assume):"

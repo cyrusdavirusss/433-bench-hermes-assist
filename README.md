@@ -37,6 +37,16 @@ skills:
     - /home/<user>/hermes-private/skills    # private half — needs account access
 ```
 
+The **car / OBD tooling is a separate public repo** (not in this clone):
+
+```bash
+git clone https://github.com/cyrusdavirusss/j2534-mcp-server.git ~/j2534-mcp-server
+```
+
+J2534 PassThru + OBD/UDS diagnostics. That work is **Windows-side** (32-bit `python.exe` for the
+PE32 `MVCI32.dll`), so a Linux/macOS instance drives a Windows host instead of running it locally.
+Method, preconditions and findings: `skills/j2534-vehicle-diagnostics/SKILL.md`.
+
 Read the newest file in `handoffs/` first: it is written for an instance with zero context, and it
 carries what is verified, what is unverified, and the gotchas that already cost time.
 
