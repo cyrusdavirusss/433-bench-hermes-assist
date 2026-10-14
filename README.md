@@ -16,6 +16,8 @@ enforces the direction: only `rf-security-research` routes here; anything else r
                                             the loose-MISO signature, the dead-remote evidence
       references/hackrf-diagnostics.md      HackRF failure modes and the DFU decision table
       scripts/                              eight bench tools, see the handoff
+    skills/j2534-vehicle-diagnostics/      the CAR skill: J2534/OBD method, preconditions, findings
+                                           (tooling repo: github.com/cyrusdavirusss/j2534-mcp-server)
     diagnostics/                     RF write-ups: HackRF diagnosis, the JJX601 reports
     handoffs/                        state for the next instance, newest first
     publish.sh                       route a skill to the right store, fan it out to every profile

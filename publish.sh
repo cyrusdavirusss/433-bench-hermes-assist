@@ -23,7 +23,7 @@ PRIVATE="${HERMES_PRIVATE:-/home/cyrus/hermes-private}"
 DEFAULT_TREE="$HOME/.hermes/skills"
 PROFILE_ROOT="$HOME/.hermes/profiles"
 
-PUBLIC_SKILLS=(rf-security-research)
+PUBLIC_SKILLS=(rf-security-research j2534-vehicle-diagnostics)
 
 route_for() {
   local s="$1" p

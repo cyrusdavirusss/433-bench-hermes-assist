@@ -6,7 +6,7 @@ written to be read cold.
 
 ## 1. Your brief, in the operator's words
 
-The operator is putting this bench — **433 MHz RF work and OBD research and development** — under
+The operator is putting this bench — **433 MHz RF work and OBD / J2534 vehicle diagnostics** — under
 your direct responsibility. That means:
 
 - The **state of the bench is yours to know**: what is verified, what is open, what was retracted.
@@ -26,6 +26,7 @@ your direct responsibility. That means:
 git clone https://github.com/cyrusdavirusss/433-bench-hermes-assist.git ~/433-bench-hermes-assist
 ~/433-bench-hermes-assist/update.sh          # pulls, then tells you whether you can SEE the skills
 hermes config set skills.external_dirs '["/home/<you>/433-bench-hermes-assist/skills", "/home/<you>/hermes-private/skills"]'
+git clone https://github.com/cyrusdavirusss/j2534-mcp-server.git ~/j2534-mcp-server   # the OBD/J2534 tooling
 ```
 
 That repo is **public** — it clones with no credentials. `update.sh` is how you update yourself from
@@ -45,7 +46,9 @@ never needs it.
    pinout, register image, the BW=58 finding, the loose-MISO signature, the host command reference.
 3. `skills/rf-security-research/SKILL.md` — the working protocols for this project.
 4. `diagnostics/` — the HackRF full diagnosis and the two RF reports as posted/reviewed.
-5. The **private** ledger (`verifications/verified-facts.md`) — every fact that has been CHECKED,
+5. `skills/j2534-vehicle-diagnostics/SKILL.md` — the car side: J2534/OBD method, preconditions and
+   findings, plus the public tooling repo it points at.
+6. The **private** ledger (`verifications/verified-facts.md`) — every fact that has been CHECKED,
    with the command that proved it. It is the closest thing to ground truth this project has.
 
 ## 4. Where the 433 bench stands — verified, do not re-derive
@@ -90,10 +93,25 @@ result available to you, and it settles a claim that was retracted once.
 - LF/immobiliser work (125 kHz) and PKES relay work are **not** covered by any radio on this bench
   yet — that is a capability question to raise with the operator, not a code problem.
 
-## 6. The OBD half — the honest state, do not assume more than this
+## 6. The OBD / J2534 half — where it actually lives
 
-**There is no OBD skill anywhere yet. Writing it is your first OBD task.** No store and no profile
-holds one; if you find yourself "recalling" OBD procedures, you are inventing them.
+**J2534 (PassThru) diagnostics is a PUBLIC repo and clones with no credentials:**
+`cyrusdavirusss/j2534-mcp-server` — J2534 PassThru device control, ISO15765/UDS, Toyota enhanced
+mode 0x21 `read_lid`, 12,000+ DTCs across 33 brands, SAE J1979 PID decoding, and the bench scanners
+(Toyota UDS scan, VAG UDS scans on a 2010-era A4, cranking/stall samplers, pedal-sweep sampler).
+
+- **`skills/j2534-vehicle-diagnostics/` in this store is now the method skill** — read it before
+  touching a car. It carries the Windows/32-bit-Python preconditions, the one-ISO15765-filter-at-a-
+  time limit of the clone VIM, `7F 19 13` being a refusal rather than an all-clear, and the
+  dropout-logging method for intermittent supply/ground faults.
+- **This work is Windows-side.** It needs a Windows host, 32-bit Python (`C:/Python311-32/python.exe`
+  for the PE32 `MVCI32.dll`) and the J2534 PassThru DLL; a **Linux instance cannot run it locally**
+  and must drive a Windows host instead. Establish which you are before promising a scan.
+- **One owner of the cable:** the MCP server or a script, never both at once.
+- The Toyota ECU map is **not** established — `toyota_scan.json` shows 8 filters installed with empty
+  `probes` and `functional`. That is an unresolved run, not a negative result about the car.
+
+**There is no OTHER OBD skill anywhere.** Do not "recall" OBD procedures — that is inventing them.
 
 What *does* exist is car/keys material that currently lives only in the operator's local profile
 tree on the kali box — it is **not in either store yet**, which is why you will not see it after the
