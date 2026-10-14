@@ -113,14 +113,16 @@ mode 0x21 `read_lid`, 12,000+ DTCs across 33 brands, SAE J1979 PID decoding, and
 
 **There is no OTHER OBD skill anywhere.** Do not "recall" OBD procedures — that is inventing them.
 
-What *does* exist is car/keys material that currently lives only in the operator's local profile
-tree on the kali box — it is **not in either store yet**, which is why you will not see it after the
-clone. It is: the car-key tool's capability matrix (the tool is **OBD-only** — no bench/EEPROM/MCU
-work), the Toyota immobiliser module version history, the region-lock findings on All-Keys-Lost
-functions, vehicle electrical/fuse diagnostics with workshop-manual sourcing, and the
-hardware-security-research protocols that cover RF/PKES/automotive work. Expected home is the
-**private** store under `skills/`. **Ask the operator to publish it, and ask which tools he actually
-has** — do not proceed on assumed capability.
+The car/keys material **is now in the private store** (published 2026-10-14, so a clone of
+`hermes-private` carries it). Under `skills/`: `hardware-security-research/` (RF/PKES/automotive
+protocols, incl. `autel-km100-toyota-lexus/` and the code-hopping key-recovery references),
+`security/autel-km100-capability/` (the car-key tool is **OBD-only** — no bench/EEPROM/MCU work —
+plus the Toyota module version history and the region-locked All-Keys-Lost findings),
+`vehicle-electrical-diagnostics/`, and `pkes-project/` (private by rule). Read
+`handoffs/car-skills-published-20261014.md` in that store for what each one is — and note that
+`hardware-security-research` carries copper-power-line material which must never be routed public.
+
+**Ask the operator which tools he actually has** — do not proceed on assumed capability.
 
 **Not yet in the store either:** the phone bench app tree and the phone-multitool-app research note
 are local to the kali box and uncommitted, so they will not arrive with a clone. If you need them,
